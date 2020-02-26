@@ -21,6 +21,7 @@ NUM_ENTRIES_FLOAT equ 5.0
     average_msg BYTE "Average of entered numbers: ",0
     user_name DWORD USER_NAME_MAX_LEN DUP(0)
     num_entries_word QWORD 1 DUP(NUM_ENTRIES_FLOAT) 
+    goodbye BYTE "See ya later alligator!", 0
 
 .code
 main PROC
@@ -100,6 +101,7 @@ main PROC
         call WriteFloat
         call Crlf
         
+        ; Clear the floating-point stack
         mov ecx, NUM_ENTRIES + 1
         clear_fp_stack_loop:
             fstp st(0)
@@ -159,10 +161,13 @@ main PROC
         cmp eax, 1
         je PromptArithmetic
         cmp eax, 0
-        je stop
+        je Stop
         jmp EndPrompt
 
-    stop:
+    Stop:
+        mov edx, OFFSET goodbye
+        call WriteString
+        call Crlf
 exit
 
 main ENDP
