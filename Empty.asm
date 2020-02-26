@@ -7,7 +7,7 @@ INCLUDE Irvine32.inc
 
 USER_NAME_MAX_LEN equ 100
 NUM_ENTRIES equ 5
-
+NUM_ENTRIES_FLOAT equ 5.0
 
 .data
     title_string_1 BYTE "Integer and Floating-Point Arithmetic", 0
@@ -16,9 +16,11 @@ NUM_ENTRIES equ 5
     hello BYTE "Hello, ", 0
     float_arith_prompt_string BYTE "Would you like to use integer (0) or floating point (1) arithmetic? ", 0 
     prompt_finished BYTE "Do you want to perform another calculation? Please enter 0 for no or 1 for yes: ", 0
+    instructions BYTE "Please enter 5 numbers below, each ending with the enter key:", 0
     sum_msg BYTE "Sum of entered numbers: ",0
     average_msg BYTE "Average of entered numbers: ",0
     user_name DWORD USER_NAME_MAX_LEN DUP(0)
+    num_entries_word QWORD 1 DUP(NUM_ENTRIES_FLOAT) 
 
 .code
 main PROC
@@ -60,13 +62,58 @@ main PROC
 
     ; Average floats
     Floats:
-        mov eax, 8
-        call WriteDec
+        ; Print instructions
+        mov edx, OFFSET instructions 
+        call WriteString
         call Crlf
+
+        ; Read NUM_ENTRIES inputs into the floating point stack
+        mov ecx, NUM_ENTRIES
+        float_read_loop:
+            call ReadFloat
+            loop float_read_loop
+
+        ; Sum inputs into the top of the stack
+        fldz
+        mov ecx, NUM_ENTRIES
+        float_sum_loop:
+            fadd
+            loop float_sum_loop
+
+        ; Calculate average
+        fld st(0)
+        fld num_entries_word
+        fdivp
+
+        ; Display average
+        mov edx, OFFSET average_msg
+        call WriteString
+        call WriteFloat
+        call Crlf
+
+        fstp st(0)
+
+        ; Display sum
+        mov eax, ecx
+        mov edx, OFFSET sum_msg
+        call WriteString
+        call WriteFloat
+        call Crlf
+        
+        mov ecx, NUM_ENTRIES + 1
+        clear_fp_stack_loop:
+            fstp st(0)
+            loop clear_fp_stack_loop
+
         jmp EndPrompt
 
     ; Average integers
     Integers:
+        ; Print instructions
+        mov edx, OFFSET instructions 
+        call WriteString
+        call Crlf
+
         ; Read NUM_ENTRIES inputs into the stack
         mov ecx, NUM_ENTRIES
         integer_read_loop:
