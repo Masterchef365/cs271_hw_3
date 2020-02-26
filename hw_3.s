@@ -26,28 +26,28 @@ section .bss
 section .text
     
 main:
-    ;; Introduction
-    ;mov edx, title_string_1
-    ;call WriteString
-    ;call Crlf
+    ; Introduction
+    mov edx, title_string_1
+    call WriteString
+    call Crlf
 
-    ;mov edx, title_string_2
-    ;call WriteString
-    ;call Crlf
+    mov edx, title_string_2
+    call WriteString
+    call Crlf
 
-    ;; Prompt for user name
-    ;mov edx, name_prompt_string
-    ;call WriteString
-    ;mov edx, user_name
-    ;mov ecx, USER_NAME_MAX_LEN
-    ;call ReadString
+    ; Prompt for user name
+    mov edx, name_prompt_string
+    call WriteString
+    mov edx, user_name
+    mov ecx, USER_NAME_MAX_LEN
+    call ReadString
 
-    ;; Write hello, <name>
-    ;mov edx, hello
-    ;call WriteString
-    ;mov edx, user_name
-    ;call WriteString
-    ;call Crlf
+    ; Write hello, <name>
+    mov edx, hello
+    call WriteString
+    mov edx, user_name
+    call WriteString
+    call Crlf
 
     ; Ask if they want floating point arithmetic
     PromptArithmetic:
